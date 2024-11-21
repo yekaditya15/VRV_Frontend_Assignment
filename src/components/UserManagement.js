@@ -14,6 +14,8 @@ import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons"; 
 import { Option } from "antd/lib/mentions";
 import validator from "validator";
 
+const { Search } = Input; // Antd Search component
+
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -27,6 +29,7 @@ const UserManagement = () => {
   });
   const [emailError, setEmailError] = useState("");
   const [usernameError, setUsernameError] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -43,14 +46,12 @@ const UserManagement = () => {
   };
 
   const validateUserInput = () => {
-    // Validate email
     if (!validator.isEmail(newUser.email)) {
       setEmailError("Please enter a valid email.");
       return false;
     }
     setEmailError("");
 
-    // Validate username with regex (at least 5 characters, 1 uppercase letter, 1 number)
     const usernameRegex = /^(?=.*[A-Z])(?=.*\d).{5,}$/;
     if (!usernameRegex.test(newUser.username)) {
       setUsernameError(
@@ -59,7 +60,6 @@ const UserManagement = () => {
       return false;
     }
     setUsernameError("");
-
     return true;
   };
 
@@ -114,7 +114,7 @@ const UserManagement = () => {
       username: user.username,
       email: user.email,
       role: user.role,
-      status: user.status === "active" ? "active" : "inactive", // Convert to string status
+      status: user.status === "active" ? "active" : "inactive",
     });
     setIsEditing(true);
     setIsModalVisible(true);
@@ -123,6 +123,18 @@ const UserManagement = () => {
   const handleFieldChange = (field, value) => {
     setNewUser({ ...newUser, [field]: value });
   };
+
+  // Filter users based on the search term
+  const filteredUsers = users.filter((user) => {
+    const userStatus = user.status.toLowerCase();
+    const searchLower = searchTerm.toLowerCase();
+
+    return (
+      user.username.toLowerCase().includes(searchLower) ||
+      user.role.toLowerCase().includes(searchLower) ||
+      userStatus === searchLower // Ensure exact match for status
+    );
+  });
 
   return (
     <div
@@ -133,7 +145,6 @@ const UserManagement = () => {
         overflowY: "auto",
       }}
     >
-      {/* Full screen, no card border */}
       <Row
         gutter={[16, 16]}
         justify="space-between"
@@ -143,33 +154,45 @@ const UserManagement = () => {
           <Button
             style={{
               borderRadius: 8,
-              backgroundColor: "#1890ff", // Blue background for the + icon button
-              color: "white", // White icon
+              backgroundColor: "#1890ff",
+              color: "white",
               fontWeight: "bold",
-              padding: "8px 12px", // Small size
+              padding: "8px 12px",
               fontSize: "16px",
-              width: "auto", // Adjust width to content
-              border: "none", // No border around the button
+              width: "auto",
+              border: "none",
             }}
             type="primary"
             onClick={() => {
-              setIsEditing(false); // Ensure that the form resets to "Add"
+              setIsEditing(false);
               setNewUser({
                 username: "",
                 email: "",
                 role: "",
                 status: "active",
-              }); // Reset new user
+              });
               setIsModalVisible(true);
             }}
             icon={<PlusOutlined style={{ fontSize: "20px" }} />}
+          />
+        </Col>
+
+        {/* Search Input */}
+        <Col xs={24} sm={24} md={12}>
+          <Search
+            placeholder="Search by username, role, or status"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)} // Update search term
+            allowClear
+            enterButton="Search"
+            style={{ borderRadius: "8px" }}
           />
         </Col>
       </Row>
 
       {/* Display Users in a responsive grid */}
       <Row gutter={[16, 16]} style={{ marginTop: "16px" }}>
-        {users.map((user) => (
+        {filteredUsers.map((user) => (
           <Col xs={24} sm={12} md={8} lg={6} key={user.id}>
             <div
               style={{
@@ -203,27 +226,26 @@ const UserManagement = () => {
                   onClick={() => handleOpenEditModal(user)}
                   icon={
                     <EditOutlined
-                      style={{ color: "#1890ff", fontSize: "18px" }}
+                      style={{ color: "#1890ff", fontSize: "16px" }}
                     />
                   }
-                  size="small"
                   style={{
+                    backgroundColor: "transparent",
                     border: "none",
-                    padding: 0,
+                    cursor: "pointer",
                   }}
                 />
                 <Button
-                  danger
                   onClick={() => handleDelete(user.id)}
                   icon={
                     <DeleteOutlined
-                      style={{ color: "#ff4d4f", fontSize: "18px" }}
+                      style={{ color: "red", fontSize: "16px" }}
                     />
                   }
-                  size="small"
                   style={{
+                    backgroundColor: "transparent",
                     border: "none",
-                    padding: 0,
+                    cursor: "pointer",
                   }}
                 />
               </div>
@@ -232,19 +254,17 @@ const UserManagement = () => {
         ))}
       </Row>
 
-      {/* Modal for Adding/Editing Users */}
+      {/* Modal for adding/editing user */}
       <Modal
         title={isEditing ? "Edit User" : "Add User"}
         visible={isModalVisible}
-        onOk={isEditing ? handleEditUser : handleAddUser}
         onCancel={() => setIsModalVisible(false)}
-        okText={isEditing ? "Update" : "Add"}
-        cancelText="Cancel"
-        destroyOnClose
-        width="100%"
-        style={{ maxWidth: "500px" }} // Max width for modal
+        footer={null}
       >
-        <Form layout="vertical">
+        <Form
+          layout="vertical"
+          onFinish={isEditing ? handleEditUser : handleAddUser}
+        >
           <Form.Item
             label="Username"
             validateStatus={usernameError ? "error" : ""}
@@ -256,6 +276,7 @@ const UserManagement = () => {
               placeholder="Enter username"
             />
           </Form.Item>
+
           <Form.Item
             label="Email"
             validateStatus={emailError ? "error" : ""}
@@ -271,16 +292,18 @@ const UserManagement = () => {
             <Select
               value={newUser.role}
               onChange={(value) => handleFieldChange("role", value)}
-              placeholder="Select role"
+              placeholder="Select a role"
             >
               <Option value="admin">Admin</Option>
               <Option value="user">User</Option>
+              <Option value="moderator">Moderator</Option>
             </Select>
           </Form.Item>
           <Form.Item label="Status">
             <Select
               value={newUser.status}
               onChange={(value) => handleFieldChange("status", value)}
+              placeholder="Select a status"
             >
               <Option value="active">Active</Option>
               <Option value="inactive">Inactive</Option>

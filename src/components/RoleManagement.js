@@ -14,15 +14,18 @@ import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons"; 
 
 const RoleManagement = () => {
   const [roles, setRoles] = useState([]);
+  const [filteredRoles, setFilteredRoles] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [roleToEdit, setRoleToEdit] = useState(null);
   const [newRole, setNewRole] = useState({ roleName: "", permissions: [] });
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       const fetchedRoles = await getRoles();
       setRoles(fetchedRoles);
+      setFilteredRoles(fetchedRoles);
     };
     fetchData();
   }, []);
@@ -40,6 +43,7 @@ const RoleManagement = () => {
       await addRole(newRole);
       const updatedRoles = await getRoles();
       setRoles(updatedRoles);
+      setFilteredRoles(updatedRoles);
       setIsModalVisible(false);
       setNewRole({ roleName: "", permissions: [] });
       openNotification("success", "Role added successfully!");
@@ -54,6 +58,7 @@ const RoleManagement = () => {
       await updateRole(roleToEdit.id, newRole);
       const updatedRoles = await getRoles();
       setRoles(updatedRoles);
+      setFilteredRoles(updatedRoles);
       setIsModalVisible(false);
       setNewRole({ roleName: "", permissions: [] });
       setIsEditing(false);
@@ -66,7 +71,9 @@ const RoleManagement = () => {
 
   const handleDelete = (id) => {
     deleteRole(id).then(() => {
-      setRoles(roles.filter((role) => role.id !== id));
+      const updatedRoles = roles.filter((role) => role.id !== id);
+      setRoles(updatedRoles);
+      setFilteredRoles(updatedRoles);
       openNotification("success", "Role deleted successfully!");
     });
   };
@@ -82,6 +89,21 @@ const RoleManagement = () => {
     setIsModalVisible(true);
   };
 
+  const handleSearch = (e) => {
+    const searchValue = e.target.value.toLowerCase();
+    setSearchTerm(searchValue);
+
+    if (searchValue === "") {
+      setFilteredRoles(roles); // Reset to all roles if search is cleared
+    } else {
+      // Filter roles by exact match on role name
+      const filtered = roles.filter(
+        (role) => role.roleName.toLowerCase() === searchValue
+      );
+      setFilteredRoles(filtered);
+    }
+  };
+
   return (
     <div
       style={{
@@ -91,6 +113,17 @@ const RoleManagement = () => {
         overflowY: "auto",
       }}
     >
+      {/* Search Bar */}
+      <Input
+        value={searchTerm}
+        onChange={handleSearch}
+        placeholder="Search by Role Name"
+        style={{
+          marginBottom: "20px",
+          width: "300px",
+        }}
+      />
+
       {/* Full screen, no card border */}
       <Row
         gutter={[16, 16]}
@@ -125,7 +158,7 @@ const RoleManagement = () => {
 
       {/* Display Roles in a responsive grid */}
       <Row gutter={[16, 16]} style={{ marginTop: "16px" }}>
-        {roles.map((role) => (
+        {filteredRoles.map((role) => (
           <Col xs={24} sm={12} md={8} lg={6} key={role.id}>
             <div
               style={{
