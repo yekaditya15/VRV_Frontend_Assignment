@@ -174,7 +174,9 @@ const UserManagement = () => {
               setIsModalVisible(true);
             }}
             icon={<PlusOutlined style={{ fontSize: "20px" }} />}
-          />
+          >
+            Add User
+          </Button>
         </Col>
 
         {/* Search Input */}
@@ -292,23 +294,27 @@ const UserManagement = () => {
             <Select
               value={newUser.role}
               onChange={(value) => handleFieldChange("role", value)}
-              placeholder="Select a role"
+              placeholder="Select role"
             >
               <Option value="admin">Admin</Option>
               <Option value="user">User</Option>
-              <Option value="moderator">Moderator</Option>
             </Select>
           </Form.Item>
+
           <Form.Item label="Status">
             <Select
               value={newUser.status}
               onChange={(value) => handleFieldChange("status", value)}
-              placeholder="Select a status"
+              placeholder="Select status"
             >
               <Option value="active">Active</Option>
               <Option value="inactive">Inactive</Option>
             </Select>
           </Form.Item>
+
+          <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+            {isEditing ? "Update User" : "Add User"}
+          </Button>
         </Form>
       </Modal>
     </div>
