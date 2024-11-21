@@ -1,70 +1,138 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+# User and Role Management Dashboard
 
-In the project directory, you can run:
+A modern web application built using React, Ant Design, and React Router for managing user roles and users. This application features a responsive layout, role-based access control, and user management functionalities. It is designed to be an easy-to-use interface for managing users and their respective roles within an organization.
 
-### `npm start`
+### Live Demo: [View the live application](https://vrv-frontend-assignment.vercel.app/)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Role Management**:
+  - Create, update, and delete roles.
+  - Assign specific permissions (Read, Write, Delete) to each role.
 
-### `npm test`
+- **User Management**:
+  - View and manage users.
+  - Assign roles to users.
+  - Update user status (active/inactive).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Search Functionality**:
+  - Search users and roles by name or keyword.
+  - Easily filter through users or roles with an intuitive search bar in the UI.
 
-### `npm run build`
+- **Responsive UI**:
+  - Built with Ant Design components for a modern and clean UI.
+  - Mobile-friendly layout.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Routing and Navigation**:
+  - Utilize React Router for seamless navigation between different sections (Home, User Management, Role Management).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Tech Stack
 
-### `npm run eject`
+- **Frontend**:
+  - React
+  - React Router
+  - Ant Design
+  - JavaScript (ES6+)
+  
+- **Development Tools**:
+  - Node.js
+  - npm (or yarn)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Prerequisites
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Before you begin, ensure you have the following installed:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- **Node.js** (v14 or higher)
+- **npm** (v6 or higher) or **yarn**
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Getting Started
 
-## Learn More
+Follow these steps to get your project up and running:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 1. Clone the Repository
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Clone the repository to your local machine:
 
-### Code Splitting
+```bash
+git clone https://github.com/your-username/repository-name.git
+cd repository-name
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 2. Install Dependencies
 
-### Analyzing the Bundle Size
+Run the following command to install the necessary dependencies:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+npm install
+```
 
-### Making a Progressive Web App
+or if you are using yarn:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```bash
+yarn install
+```
 
-### Advanced Configuration
+### 3. Run the Application
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+After the dependencies are installed, run the application with the following command:
 
-### Deployment
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+or with yarn:
 
-### `npm run build` fails to minify
+```bash
+yarn start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The application will start on [http://localhost:3000](http://localhost:3000).
+
+### 4. Folder Structure
+
+Here’s a breakdown of the folder structure:
+
+```
+/src
+  /components        # Reusable components (e.g., User Management, Role Management)
+  /services          # API functions to manage data
+  App.js            # Main app file where routing and layout are defined
+  index.js          # Entry point of the React application
+
+```
+
+### 5. Modify Data (Optional)
+
+The data (users, roles, permissions) is stored in a mock array inside the `services` folder. If you wish to modify the data, you can change the contents of `rolesData` and `usersData` in `services` to add or remove roles and users.
+
+```js
+let rolesData = [
+  { id: 1, roleName: "Admin", permissions: ["Read", "Write", "Delete"] },
+  { id: 2, roleName: "User", permissions: ["Read"] },
+];
+
+let usersData = [
+  { id: 1, username: "johnDoe1", email: "john@example.com", role: "Admin", status: "active" },
+  { id: 2, username: "janeSmith3", email: "jane@example.com", role: "User", status: "active" },
+];
+```
+
+### 6. Test the Application
+
+Once the app is running locally, you can test the following features:
+
+- **Home Page**: The landing page of the application.
+- **User Management**: View users, add new users, edit existing users, or delete users.
+- **Role Management**: Create, update, and delete roles and assign permissions to roles.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
+
+
+
